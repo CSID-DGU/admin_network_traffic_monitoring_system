@@ -32,7 +32,7 @@ class TrafficData(NamedTuple):
     avg_rate_bps: float
 
 class TrafficMonitor:
-    def __init__(self, server_name: str, server_ip: str, interface: str, debug: bool = False):
+    def __init__(self, server_name: str, server_ip: str, interface: str, apps_script_url: str = None, history_file: str = None, debug: bool = False):
         """
         Initialize the traffic monitor
         
@@ -40,12 +40,24 @@ class TrafficMonitor:
             server_name: Server name for identification
             server_ip: Server IP address for identification
             interface: Network interface to monitor
+            apps_script_url: Google Apps Script URL for notifications
+            history_file: Path to traffic history JSON file
             debug: Enable debug output
         """
         self.server_name = server_name
         self.server_ip = server_ip
         self.interface = interface
         self.debug = debug
+        
+        # Update global APPS_SCRIPT_URL if provided
+        if apps_script_url:
+            global APPS_SCRIPT_URL
+            APPS_SCRIPT_URL = apps_script_url
+            
+        # Update global HISTORY_FILE if provided
+        if history_file:
+            global HISTORY_FILE
+            HISTORY_FILE = history_file
         
         # Setup logging
         logging.basicConfig(
@@ -424,6 +436,8 @@ def main():
                        help='Network interface to monitor')
     parser.add_argument('--apps-script-url', required=True,
                        help='Google Apps Script webhook URL')
+    parser.add_argument('--history-file', 
+                       help='Path to traffic history JSON file')
     parser.add_argument('--debug', action='store_true',
                        help='Enable debug output')
     
@@ -434,6 +448,7 @@ def main():
         server_ip=args.server_ip,
         interface=args.interface,
         apps_script_url=args.apps_script_url,
+        history_file=args.history_file,
         debug=args.debug
     )
     

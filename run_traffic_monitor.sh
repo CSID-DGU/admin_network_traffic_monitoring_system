@@ -92,6 +92,7 @@ run_monitor() {
         --server-ip "$SERVER_IP" \
         --interface "$INTERFACE" \
         --apps-script-url "$APPS_SCRIPT_URL" \
+        --history-file "$LOG_DIR/traffic_history.json" \
         >> "$LOG_FILE" 2>&1
     
     local exit_code=$?
