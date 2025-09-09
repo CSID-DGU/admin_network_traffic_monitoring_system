@@ -81,13 +81,6 @@ crontab -e
 */5 * * * * /path/to/run_traffic_monitor.sh
 ```
 
-#### 15분마다 실행 (부하 절약)
-
-```bash
-# 15분마다 트래픽 모니터링 실행
-*/15 * * * * /path/to/run_traffic_monitor.sh
-```
-
 ### 4.3 로그 관리가 포함된 설정 (권장)
 
 시스템 로그와 별도로 Cron 실행 로그를 관리하려면:
