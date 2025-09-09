@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# ===== Traffic Monitor Configuration =====
+# Copy this file to config.sh and modify the values below
+
+# 서버 정보 설정
+SERVER_NAME="your-server-name"         # 예: "web-server-01"
+SERVER_IP="your-server-ip"             # 예: "192.168.1.100"
+INTERFACE="your-interface"             # 예: "wlp12s0" 또는 "eth0"
+
+# Google Apps Script URL
+APPS_SCRIPT_URL="your-apps-script-url"  # 예: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"

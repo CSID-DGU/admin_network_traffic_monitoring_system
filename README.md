@@ -3,20 +3,32 @@
 
 ## 1. 스크립트 설정
 
-먼저 `run_traffic_monitor.sh` 파일에서 다음 설정값들을 실제 환경에 맞게 수정해야 합니다:
+### 1.1 설정 파일 생성
+
+먼저 설정 파일을 생성해야 합니다:
 
 ```bash
-# 설정 - 사용자가 수정해야 하는 부분
+# 설정 템플릿을 복사
+cp config.sh.example config.sh
+```
+
+### 1.2 설정 값 수정
+
+생성된 `config.sh` 파일을 열어서 다음 설정값들을 실제 환경에 맞게 수정해야 합니다:
+
+```bash
+# 서버 정보 설정
 SERVER_NAME="web-server-01"                # 서버 식별명
 SERVER_IP="210.94.179.180"                  # 서버 IP 주소
 INTERFACE="eno1"                         # 모니터링할 네트워크 인터페이스
-APPS_SCRIPT_URL="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"  # Apps Script URL
 
-# 스크립트 경로 설정
-SCRIPT_DIR="/home/user/traffic-monitor"     # Git 저장소가 clone된 로컬 경로
+# Google Apps Script URL
+APPS_SCRIPT_URL="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"  # Apps Script URL
 ```
 
-### 네트워크 인터페이스 확인 방법
+> **주의**: `config.sh` 파일은 민감한 정보를 포함하므로 Git에 커밋되지 않습니다.
+
+### 1.3 네트워크 인터페이스 확인 방법
 
 사용 가능한 네트워크 인터페이스를 확인하려면:
 
@@ -54,7 +66,7 @@ Cron Job 설정 전에 스크립트가 정상 동작하는지 확인:
 로그 확인:
 
 ```bash
-tail -f /var/log/traffic-monitor/traffic_monitor.log
+tail -f logs/traffic_monitor.log
 ```
 
 ## 4. Cron Job 설정
@@ -87,7 +99,7 @@ crontab -e
 
 ```bash
 # 10분마다 실행하고 Cron 로그 별도 저장
-*/10 * * * * /path/to/run_traffic_monitor.sh >> /var/log/traffic-monitor/cron.log 2>&1
+*/10 * * * * /path/to/run_traffic_monitor.sh >> /path/to/logs/cron.log 2>&1
 ```
 
 ### 4.4 실제 설정 예시
@@ -96,7 +108,7 @@ crontab -e
 
 ```bash
 # 매 10분마다 네트워크 트래픽 모니터링 실행
-*/10 * * * * /home/admin/scripts/run_traffic_monitor.sh >> /var/log/traffic-monitor/cron.log 2>&1
+*/10 * * * * /home/admin/scripts/run_traffic_monitor.sh >> /home/admin/scripts/logs/cron.log 2>&1
 ```
 
 ## 5. Cron Job 확인
@@ -133,17 +145,17 @@ sudo grep CRON /var/log/syslog
 
 ```bash
 # 메인 로그 확인
-tail -f /var/log/traffic-monitor/traffic_monitor.log
+tail -f logs/traffic_monitor.log
 
 # Cron 실행 로그 확인
-tail -f /var/log/traffic-monitor/cron.log
+tail -f logs/cron.log
 ```
 
 ### 6.2 로그 파일 위치
 
-- **메인 로그**: `/var/log/traffic-monitor/traffic_monitor.log`
-- **Cron 로그**: `/var/log/traffic-monitor/cron.log`
-- **백업 로그**: `/var/log/traffic-monitor/traffic_monitor.log.backup.YYYYMMDD`
+- **메인 로그**: `logs/traffic_monitor.log`
+- **Cron 로그**: `logs/cron.log`
+- **백업 로그**: `logs/traffic_monitor.log.backup.YYYYMMDD`
 
 ## 7. 문제 해결
 
@@ -171,10 +183,10 @@ tail -f /var/log/traffic-monitor/cron.log
 
 ```bash
 # 최근 에러 로그 확인
-grep "ERROR" /var/log/traffic-monitor/traffic_monitor.log
+grep "ERROR" logs/traffic_monitor.log
 
 # Python 관련 오류 확인
-grep "python3" /var/log/traffic-monitor/cron.log
+grep "python3" logs/cron.log
 ```
 
 ### 7.3 디버그 모드 실행
@@ -204,10 +216,10 @@ Cron Job 설정 후 다음을 확인하여 정상 동작 여부를 검증:
 
 ```bash
 # 최근 실행 로그 확인
-tail -20 /var/log/traffic-monitor/traffic_monitor.log
+tail -20 logs/traffic_monitor.log
 
 # Health check 성공 로그 확인
-grep "Health check sent successfully" /var/log/traffic-monitor/traffic_monitor.log
+grep "Health check sent successfully" logs/traffic_monitor.log
 
 # 히스토리 파일 확인
 ls -la /path/to/traffic-monitor/traffic_history.json

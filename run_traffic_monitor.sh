@@ -4,16 +4,22 @@
 # Git pull and run traffic monitor with user configuration
 # Usage: ./run_traffic_monitor.sh
 
-# 설정 - 사용자가 수정해야 하는 부분
-SERVER_NAME="your-server-name"         # 예: "web-server-01"
-SERVER_IP="your-server-ip"             # 예: "192.168.1.100"
-INTERFACE="your-interface"             # 예: "wlp12s0" 또는 "eth0"
-APPS_SCRIPT_URL="your-apps-script-url"  # 예: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+# 설정 파일 로드
+SCRIPT_DIR="$(dirname "$0")"
+CONFIG_FILE="$SCRIPT_DIR/config.sh"
+
+if [[ ! -f "$CONFIG_FILE" ]]; then
+    echo "ERROR: 설정 파일이 없습니다: $CONFIG_FILE"
+    echo "config.sh.example 파일을 config.sh로 복사한 후 설정을 수정하세요."
+    echo "cp config.sh.example config.sh"
+    exit 1
+fi
+
+source "$CONFIG_FILE"
 
 # 스크립트 경로 설정
-SCRIPT_DIR="/path/to/traffic-monitor"  # Git 저장소가 clone된 로컬 디렉토리 경로
-PYTHON_SCRIPT="traffic_monitor.py"
-LOG_DIR="/var/log/traffic-monitor"
+PYTHON_SCRIPT="$SCRIPT_DIR/traffic_monitor.py"
+LOG_DIR="$SCRIPT_DIR/logs"
 LOG_FILE="$LOG_DIR/traffic_monitor.log"
 
 # 로그 디렉토리 생성
@@ -48,9 +54,6 @@ validate_config() {
         error_exit "APPS_SCRIPT_URL이 설정되지 않았습니다. 스크립트 상단에서 설정하세요."
     fi
     
-    if [[ ! -d "$SCRIPT_DIR" ]]; then
-        error_exit "스크립트 디렉토리가 존재하지 않습니다: $SCRIPT_DIR"
-    fi
 }
 
 # Git 저장소 업데이트

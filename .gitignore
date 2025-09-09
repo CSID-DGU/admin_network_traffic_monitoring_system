@@ -1,0 +1,15 @@
+# Configuration file with sensitive information
+config.sh
+
+# Log files
+logs/
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Temporary files
+*.tmp
+*.bak
